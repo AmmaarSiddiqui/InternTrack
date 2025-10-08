@@ -11,3 +11,6 @@ The platform’s goal is to help students identify bottlenecks, maintain consist
 
 ### Living Document
 https://docs.google.com/document/d/16O6EYx5nRm3mc8Dp2drx_aRKrPdCXx1qTyyFPwyXD8Y/edit?usp=sharing 
+
+### Layout of Repo
+Currently in development
