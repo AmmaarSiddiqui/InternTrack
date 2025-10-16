@@ -1,16 +1,15 @@
-# InternTrack
-InternTrack is a web-based platform designed to make the internship search process more organized, transparent, and motivating for students. Instead of using messy spreadsheets, InternTrack allows users to upload or enter their application data and automatically visualize their progress through charts, funnels, and streak trackers.
-The platform’s goal is to help students identify bottlenecks, maintain consistency, and stay accountable while also enabling advisors and peers to view anonymized progress summaries. By turning the internship hunt into a structured, data-driven experience, InternTrack reduces stress and fosters collaboration.
+# Partner & Pump
+Partner & Pump is an iOS app that helps gym-goers find compatible workout partners based on their schedules, training style/split, goals, and location. It then keeps gym-goers motivated with a lightweight social feed for PRs and highlights. Instead of luck-based DMs or generic fitness forums, Partner & Pump uses a matching algorithm that is tailored to gym-goer's needs for both same-day sessions and long-term training partners.
 
+The app’s goal is to make gym partner finding fast, intentional, and consistent. By combining structured matching with simple social features and clear profiles, Partner & Pump reduces the back-and-forth, lowers the barrier for beginners, and builds community around shared routines and results.
 ### Project Goals
-- Provide students with dynamic visualizations of their internship applications.
-- Replace scattered spreadsheets with a centralized, automated dashboard.
-- Have an all-in-one solution to find jobs and internships while tracking them.
-- Encourage accountability and motivation through streaks and peer comparisons.
-- Maintain data privacy and flexibility, supporting multiple input formats (CSV, Google Sheets).
+- Match users by availability, workout split, goals, and proximity (short-term & long-term).
+- Provide clear profiles and a compatibility score to reduce guesswork.
+- Offer a simple Discover feed for PRs, clips, and encouragement.
+- Enable real-time chat and notifications to coordinate sessions quickly.
+- (Stretch) Support shared workout schedules and wearable sync for progress tracking.
 
 ### Living Document
-https://docs.google.com/document/d/16O6EYx5nRm3mc8Dp2drx_aRKrPdCXx1qTyyFPwyXD8Y/edit?usp=sharing 
-
+https://docs.google.com/document/d/1PUA3s_mBw1x6MH6qmVhAE786RmVXPUP_kMaac3gElBs/edit?usp=sharing
 ### Layout of Repo
 Currently in development
