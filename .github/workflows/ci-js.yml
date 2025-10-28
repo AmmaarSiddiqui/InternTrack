@@ -1,0 +1,32 @@
+name: JS / TS Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-js:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        working-directory: [ "app", "functions" ]
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install deps
+        working-directory: ${{ matrix.working-directory }}
+        run: npm install
+
+      - name: Run Jest with coverage
+        working-directory: ${{ matrix.working-directory }}
+        run: npm test -- --coverage
