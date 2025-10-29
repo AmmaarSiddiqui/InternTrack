@@ -214,6 +214,7 @@ export default function Index() {
             {isSignup ? "Create account" : "Log in"}
           </Text>
         </Pressable>
+        
 
         {/* Switch helper */}
         <Pressable
