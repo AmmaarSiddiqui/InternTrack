@@ -28,10 +28,9 @@ Partner & Pump will be available for download on the app store soon. Users can g
 
 ## 3. How to Run the Software
 
-1.  Download the app on an IOS 15+ device.
+1.  Download the Partner & Pump app on an IOS 15+ device.
 2.  Navigate to the Partner & Pump App.
 3.  If it is your first time, you will be guided through setting up your account and profile.
-4.  Match or discover other gym-goers!
 
 ## 4. How to Use the Software
 
