@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "Partner & Pump",
+    "slug": "partner-and-pump",
+    "scheme": "partnerandpump",
+    "orientation": "portrait",
+    "android": {
+      "package": "com.anonymous.partnerandpump"
+    }
+  }
+}
