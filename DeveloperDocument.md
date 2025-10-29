@@ -18,12 +18,12 @@
   2. Navigate into the project directory
       cd partner-and-pump
 
-#### Directory Structure
+# Directory Structure
 
 <img width="504" height="750" alt="image" src="https://github.com/user-attachments/assets/013e40b5-5560-489e-a94e-e10cec39ba86" />
 
 
-#### How to build software: 
+# How to build software: 
 This project has two build targets:
 
 Mobile client (Expo React Native) — lives in the app/ folder (started from the repo root).
@@ -32,26 +32,26 @@ Backend (Firebase Cloud Functions, TypeScript) — lives in functions/.
 
 Follow the steps below to build all components locally and verify everything with tests.
 
-# Install once
+#### Install once
 npm i -g firebase-tools   # deploy/emulate backend
-# Expo CLI is invoked via npx, no global install required
+#### Expo CLI is invoked via npx, no global install required
 
 1) Clone & install
 git clone https://github.com/AmmaarSiddiqui/Partner-And-Pump.git
 cd Partner-And-Pump
 
-# Install root dependencies (Expo app and tooling)
+#### Install root dependencies (Expo app and tooling)
 npm ci
 
-# Install backend deps
+#### Install backend deps
 cd functions
 npm ci
 cd ..
 
 2) Build & run the mobile client (Expo)
 Fast dev via Expo Go (no native build)
-# From repo root
-# Clear cache on first run while we’re evolving dependencies
+#### From repo root
+#### Clear cache on first run while we’re evolving dependencies
 npx expo start -c
 
 
