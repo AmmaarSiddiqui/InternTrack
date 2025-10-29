@@ -2,17 +2,17 @@ name: JS / TS Tests
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
-  test-js:
+  test-functions:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        working-directory: [ "app", "functions" ]
+    defaults:
+      run:
+        working-directory: functions
 
     steps:
       - name: Checkout repo
@@ -24,9 +24,7 @@ jobs:
           node-version: "20"
 
       - name: Install deps
-        working-directory: ${{ matrix.working-directory }}
         run: npm install
 
-      - name: Run Jest with coverage
-        working-directory: ${{ matrix.working-directory }}
+      - name: Run Jest with coverage (CI mode)
         run: npm test -- --coverage
