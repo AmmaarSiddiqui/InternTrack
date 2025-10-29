@@ -98,7 +98,7 @@ Run all Jest tests:
 npm test
 
 
-_____
+---
 #### How to Add a New Test
 Add or update the code you want to test under functions/src/.... For example, if you create a new helper called formatInviteMessage in functions/src/invites/formatInviteMessage.ts, that’s the code you’ll be testing.
 
@@ -140,7 +140,7 @@ Use mocks for Firebase calls only when integration tests aren’t needed.
 Commit your test with the corresponding feature update.
 Keep all tests in __test__
 
-_____
+---
 #### How to build a new release
 
 Releasing Partner & Pump involves packaging both the Expo mobile client and Firebase backend into stable, versioned builds suitable for testing or publication to app stores.
