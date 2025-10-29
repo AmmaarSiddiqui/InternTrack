@@ -6,11 +6,11 @@
   "scripts": {
     "start": "expo start -c",
     "ios": "expo run:ios"
-    
   },
   "dependencies": {
     "expo": "54.0.21",
     "firebase": "^12.4.0",
+    "geofire-common": "^6.0.0",
     "react": "19.1.0",
     "react-native": "0.81.5",
     "react-native-gesture-handler": "~2.28.0",
