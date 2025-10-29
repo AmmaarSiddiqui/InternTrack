@@ -1,10 +1,10 @@
 # Partner & Pump: User Manual
 
-Welcome to Partner & Pump! 🏋️‍♂️ This manual will guide you through accessing, setting up, and using our web app to find your next great workout partner.
+Welcome to Partner & Pump! 🏋️‍♂️ This manual will guide you through accessing, setting up, and using our app to find your next great workout partner.
 
 ## 1. What is Partner & Pump?
 
-Partner & Pump is a web application designed to connect you with the perfect gym partner.
+Partner & Pump is an IOS app designed to connect you with the perfect gym partner.
 
 Our goal is to make your fitness journey more consistent, motivating, and fun. Unlike general social media apps, Partner & Pump is built specifically to find compatible partners based on the things that matter for a good workout:
 
@@ -15,22 +15,23 @@ Our goal is to make your fitness journey more consistent, motivating, and fun. U
 
 Whether you're looking for a one-time spotter for a heavy lift today (**"Pump Now"**) or a consistent, long-term partner to match your weekly schedule, our app helps you find the right person.
 
+Partner & Pump will also give users access to a social "Discover" feed to share achievements and connect with others
+
 ## 2. How to Install the Software
 
-There is **no installation required**! Partner & Pump is a web application that runs directly in your browser.
+Partner & Pump will be available for download on the app store soon. Users can go to the App store, search up Partner & Pump, and download to access the software and setup their profile.
 
 ### Prerequisites
 
-* A modern web browser (e.g., Chrome, Firefox, Safari, Edge).
+* An ios device (IOS 15+)
 * An internet connection.
 
 ## 3. How to Run the Software
 
-1.  Open your preferred web browser.
-2.  Navigate to the Partner & Pump website.
-    > **Note:** A link to the live application will be provided here.
-3.  We recommend bookmarking the site for easy access.
-4.  If it is your first time, you will be guided through setting up your account and profile.
+1.  Download the app on an IOS 15+ device.
+2.  Navigate to the Partner & Pump App.
+3.  If it is your first time, you will be guided through setting up your account and profile.
+4.  Match or discover other gym-goers!
 
 ## 4. How to Use the Software
 
@@ -38,7 +39,7 @@ Here are the main features of Partner & Pump and how to use them.
 
 ### Setting Up Your Account & Profile
 
-When you first visit the site, you'll need to create an account. You can sign up using your email address or a social login (Google/Apple).
+When you first visit the app, you'll need to create an account. You can sign up using your email address or a social login (Google/Apple).
 
 During setup, you will be asked to fill out your profile with key information that we use for matching:
 
@@ -50,29 +51,29 @@ During setup, you will be asked to fill out your profile with key information th
 ### Finding a Same-Day Partner ("Pump Now")
 
 Use this feature when you need a partner for a single session, right now or later today.
-
-1.  Navigate to the "**Pump Now**" tab.
-2.  Enter the details for today's session:
+1.  Navigate to the "**Match**" tab.
+2.  Navigate to the "**Pump Now**" section.
+3.  Enter the details for today's session:
     * **Workout Type:** (e.g., "Leg Day," "Push," "Full Body," "Cardio")
     * **Time Window:** (e.g., "Between 5:00 PM and 7:00 PM")
     * **Location:** (This will default to your primary gym but can be changed)
-3.  Click search, and the app will show you a list of available users who match your criteria.
-4.  You can click on a profile to see more details.
-5.  If you find a good match, click "**Send Request**".
-6.  When they accept, a new chat will automatically open in your messages tab so you can coordinate the details (e.g., "Meet by the squat racks at 5:30?").
+4.  Click search, and the app will show you a list of available users who match your criteria.
+5.  You can click on a profile to see more details.
+6.  If you find a good match, click "**Send Request**".
+7.  When they accept, a new chat will automatically open in your messages tab so you can coordinate the details (e.g., "Meet by the squat racks at 5:30?").
 
 ### Finding a Long-Term Partner
 
 Use this feature to find a consistent partner who matches your weekly routine and long-term goals.
-
-1.  Select the "**Long-Term Partner**" matching mode.
-2.  The app will search for users based on your detailed profile information, prioritizing:
+1.  Navigate to the "**Match**" tab.
+2.  Select the "**Long-Term Partner**" matching mode.
+3.  The app will search for users based on your detailed profile information, prioritizing:
     * **Schedule Overlap:** People who are free on the same days and times as you.
     * **Workout Split:** People who follow a similar split (e.g., you both do Push/Pull/Legs).
     * **Goal Alignment:** People with similar fitness goals and experience levels.
-3.  The app will show you a ranked list of potential partners with a compatibility score (e.g., "87% Match").
-4.  You can browse these profiles and send a "**Partnership Request**" to those who look like a good fit.
-5.  If they accept, a chat will open so you can discuss your schedules and plan your workouts.
+4.  The app will show you a ranked list of potential partners with a compatibility score (e.g., "87% Match").
+5.  You can browse these profiles and send a "**Partnership Request**" to those who look like a good fit.
+6.  If they accept, a chat will open so you can discuss your schedules and plan your workouts.
 
 ### The Discover Feed
 
@@ -91,6 +92,12 @@ You can send and receive direct messages within the app. A new chat thread is au
 * You choose to message someone from their **Discover feed post or profile**.
 
 All your active conversations are saved in the "**Messages**" tab. You can enable browser notifications in your settings to be alerted to new messages.
+
+### Home Page
+
+You can see posts of those you have matched with and like or comment to interact with them.
+Users will be able to choose who will show up on their home page.
+
 
 ### Upcoming Features
 
