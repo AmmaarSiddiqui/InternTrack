@@ -27,5 +27,4 @@ jobs:
         run: npm install
 
       - name: Run Jest with coverage (CI mode)
-        run: npm run test:ci
-        
+        run: npm test -- --coverage
