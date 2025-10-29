@@ -70,7 +70,7 @@ cd functions
 npm run build    # transpiles to lib/
 
 4) Lint & type-check (optional but recommended)
-# Frontend (if ESLint config is present)
+#### Frontend (if ESLint config is present)
 npm run lint
 
 # Backend TS type-check
@@ -99,7 +99,7 @@ npm test
 
 
 ---
-#### How to Add a New Test
+# How to Add a New Test
 Add or update the code you want to test under functions/src/.... For example, if you create a new helper called formatInviteMessage in functions/src/invites/formatInviteMessage.ts, that’s the code you’ll be testing.
 
 Create a new test file in functions/__tests__/ with a matching purpose and a .test.ts suffix. For example: functions/__tests__/formatInviteMessage.test.ts.
@@ -141,7 +141,7 @@ Commit your test with the corresponding feature update.
 Keep all tests in __test__
 
 ---
-#### How to build a new release
+# How to build a new release
 
 Releasing Partner & Pump involves packaging both the Expo mobile client and Firebase backend into stable, versioned builds suitable for testing or publication to app stores.
 Most of the process is automated through Expo’s build service and Firebase’s CLI tools, but several manual checks are still required.
