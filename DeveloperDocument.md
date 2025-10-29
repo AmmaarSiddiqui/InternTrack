@@ -19,55 +19,9 @@
       cd partner-and-pump
 
 #### Directory Structure
-Partner-And-Pump/
-├─ app/                        # React Native client (Expo)
-│  ├─ components/              # Reusable UI components (buttons, cards, etc.)
-│  ├─ screens/                 # App screens (PumpNow, Profile, MatchResults)
-│  ├─ navigation/              # Navigation setup using React Navigation
-│  ├─ services/                # Business logic (matching, validation, Firebase)
-│  ├─ state/                   # Context API hooks (Auth, Session, etc.)
-│  ├─ utils/                   # Helper functions (time/date, etc.)
-│  ├─ __tests__/               # Frontend Jest test files
-│  ├─ index.js                 # App entry point that initializes the root component
-│  ├─ jest.config.js           # Jest configuration for app-side testing
-│  ├─ app.json                 # Expo app configuration
-│  └─ package.json             # Client dependencies and scripts
-│
-├─ functions/                  # Firebase Cloud Functions (backend)
-│  ├─ src/
-│  │   ├─ index.ts             # Entry point for backend functions
-│  │   ├─ match/               # Partner matching logic
-│  │   ├─ validation/          # Input/data validation
-│  │   └─ messaging/           # Notifications (push/chat)
-│  ├─ __tests__/               # Backend unit tests
-│  ├─ tsconfig.json
-│  └─ package.json
-│
-├─ User Manual                 # User guide to Partner & Pump usage
-│  
-├─ Developer Document          # Developer guide for contributing to Partner & Pump 
-│
-├─ .github/workflows/          # GitHub Actions CI/CD workflows
-│  ├─ ci-js.yml                # Jest test workflow for app + backend
-│  
-│
-├─ node_modules/               # Installed npm dependencies (auto-generated)
-│
-├─ reports/                    # Temporary folder for output, testing, and logs
-│
-├─ .gitignore                   # Files and directories ignored by Git
-│
-├─ coding-guidelines.md        # Contributor code conventions and best practices
-│
-├─ babel.config.js             # Babel setup for transpiling modern JS
-│
-├─ package.json                # Root project configuration (scripts, dependencies)
-│
-├─ package-lock.json           # Locked dependency versions for consistent installs
-│
-├─ tsconfig.json                # TypeScript configuration (for backend)
-├─ README.md                   # General overview of the project
-└─ LICENSE                     # Open source license
+
+<img width="504" height="750" alt="image" src="https://github.com/user-attachments/assets/013e40b5-5560-489e-a94e-e10cec39ba86" />
+
 
 #### How to build software: 
 This project has two build targets:
