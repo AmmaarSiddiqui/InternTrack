@@ -2,7 +2,7 @@
 
 ---
 
-## 📘 User Manual
+## Developer Manual
 
 #### Prerequisites
 | Tool | Version | Purpose |
