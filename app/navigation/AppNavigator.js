@@ -14,6 +14,8 @@ import HomeScreen from "../screens/HomeScreen";
 import ProfileCreateScreen from "../screens/ProfileCreateScreen";
 import AuthScreen from "../screens/AuthScreen";
 import MatchScreen from "../screens/MatchScreen";
+import PumpNowScreen from "../screens/PumpNowScreen";
+import MatchListScreen from "../screens/MatchListScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -78,7 +80,6 @@ export default function AppNavigator() {
   return (
     <NavigationContainer theme={CustomDarkTheme}>
       <Stack.Navigator
-        // Apply theme styles to the Stack Navigator headers too
         screenOptions={{
           headerStyle: {
             backgroundColor: CustomDarkTheme.colors.card,
@@ -99,11 +100,23 @@ export default function AppNavigator() {
             options={{ title: "Create Profile", headerBackVisible: false }}
           />
         ) : (
-          <Stack.Screen
-            name="MainApp"
-            component={MainAppTabs}
-            options={{ headerShown: false }}
-          />
+         <Stack.Group>
+            <Stack.Screen
+              name="MainApp"
+              component={MainAppTabs}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="PumpNow"
+              component={PumpNowScreen}
+              options={{ title: "Find a Partner" }}
+            />
+            <Stack.Screen
+              name="MatchList"
+              component={MatchListScreen}
+              // The title will be set dynamically by the screen itself
+            />
+          </Stack.Group>
         )}
       </Stack.Navigator>
     </NavigationContainer>
