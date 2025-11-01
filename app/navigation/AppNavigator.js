@@ -16,6 +16,8 @@ import AuthScreen from "../screens/AuthScreen";
 import MatchScreen from "../screens/MatchScreen";
 import PumpNowScreen from "../screens/PumpNowScreen";
 import MatchListScreen from "../screens/MatchListScreen";
+import DiscoverScreen from "../screens/DiscoverScreen";
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -47,7 +49,9 @@ function MainAppTabs() {
             iconName = focused ? "link" : "link-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
-          }
+          } else if (route.name === "Discover") {
+            iconName = focused ? "compass" : "compass-outline";
+          } 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
 
@@ -65,6 +69,7 @@ function MainAppTabs() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Discover" component={DiscoverScreen} />
       <Tab.Screen
         name="Match"
         component={MatchScreen}
