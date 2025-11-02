@@ -17,6 +17,8 @@ import MatchScreen from "../screens/MatchScreen";
 import PumpNowScreen from "../screens/PumpNowScreen";
 import MatchListScreen from "../screens/MatchListScreen";
 import DiscoverScreen from "../screens/DiscoverScreen";
+import ProfileScreen from "../screens/ProfileScreen";
+import ProfileStack from "./ProfileStack";
 
 
 const Stack = createNativeStackNavigator();
@@ -75,6 +77,7 @@ function MainAppTabs() {
         component={MatchScreen}
         options={{ title: "Match" }}
       />
+      <Tab.Screen name="Profile" component={ProfileStack} options={{ headerShown: false }} />
     </Tab.Navigator>
   );
 }
@@ -90,6 +93,8 @@ export default function AppNavigator() {
             backgroundColor: CustomDarkTheme.colors.card,
           },
           headerTintColor: CustomDarkTheme.colors.text,
+          headerTransparent: false,
+          headerBlurEffect: "none",
         }}
       >
         {!user ? (
