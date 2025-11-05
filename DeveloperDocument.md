@@ -15,7 +15,7 @@
   1. Clone the repository
       Anyone can access the source code by cloning this public GitHub repository:
 ```
-     git clone https://github.com/PartnerAndPump/partner-and-pump.git
+git clone https://github.com/PartnerAndPump/partner-and-pump.git
 ```
   3. Navigate into the project directory
       cd partner-and-pump
