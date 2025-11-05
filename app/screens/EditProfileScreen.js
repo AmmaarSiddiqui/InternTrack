@@ -14,7 +14,7 @@ const TIME_OPTIONS = [
   "Late Night (10PM–12AM)",
 ];
 const FITNESS_LEVEL_OPTIONS = ["Beginner", "Intermediate", "Advanced"];
-const SPLIT_OPTIONS = ["Push/Pull/Legs", "Upper/Lower", "Full Body", "Bro Split"];
+const SPLIT_OPTIONS = ["Push/Pull/Legs", "Upper/Lower", "Full Body", "Bro Split", "Sports"];
 
 export default function EditProfileScreen() {
   const navigation = useNavigation();
