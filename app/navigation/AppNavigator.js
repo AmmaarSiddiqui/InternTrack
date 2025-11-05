@@ -84,14 +84,20 @@ function MainAppTabs() {
 
 export default function AppNavigator() {
   const { user, profile, profileLoading } = useAuth();
-  
- const navKey = !user
-   ? "auth"
-   : profileLoading
-   ? "boot"
-   : profile === null
-   ? "create"
-   : "app";
+    console.log("[Nav] user?", !!user, "profile:", profile, "profileLoading:", profileLoading);
+
+  const hasSeenProfileRef = React.useRef(false);
+  if (profile !== undefined) hasSeenProfileRef.current = true;
+
+  const showBoot = !!user && profile === undefined && !hasSeenProfileRef.current;
+
+  const navKey = !user
+    ? "auth"
+    : showBoot
+    ? "boot"
+    : profile === null
+    ? "create"
+    : "app";
 
   return (
      <NavigationContainer theme={CustomDarkTheme}>
@@ -107,24 +113,29 @@ export default function AppNavigator() {
         }}
       >
         {!user ? (
+          (console.log("[Nav] -> Auth"),  
           <Stack.Screen
+          
             name="Auth"
             component={AuthScreen}
             options={{ headerShown: false }}
-          />
+          />)
         )  : profile === undefined ? ( 
+            (console.log("[Nav] -> Boot"),
           <Stack.Screen
             name="Boot"
             component={BootScreen}
             options={{ headerShown: false }}
-          />
-        ) : profile === null ? (      
+          />)
+        ) : profile === null ? (
+          (console.log("[Nav] -> ProfileCreate"),      
           <Stack.Screen
             name="ProfileCreate"
             component={ProfileCreateScreen}
             options={{ title: "Create Profile", headerBackVisible: false }}
-          />
+          />)
         ) : (
+           (console.log("[Nav] -> MainApp"),
          <Stack.Group>
             <Stack.Screen
               name="MainApp"
@@ -141,7 +152,7 @@ export default function AppNavigator() {
               component={MatchListScreen}
               // The title will be set dynamically by the screen itself
             />
-          </Stack.Group>
+          </Stack.Group>)
         )}
       </Stack.Navigator>
     </NavigationContainer>

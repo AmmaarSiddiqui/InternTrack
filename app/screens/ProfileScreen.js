@@ -107,7 +107,6 @@ export default function ProfileScreen() {
   );
 }
 
-/* ... keep your Card/Row/AvailabilityRow and styles the same ... */
 
 
 /* ---------- tiny building blocks ---------- */
