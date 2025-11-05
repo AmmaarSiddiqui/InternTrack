@@ -28,7 +28,7 @@ export default function HomeScreen({ navigation }) {
 
       <TouchableOpacity
         style={[styles.button, { backgroundColor: colors.primary }]} 
-        onPress={() => navigation.navigate("PumpNow")}
+        onPress={() => navigation.navigate("Match")}
       >
         <Text style={styles.buttonText}>Find a partner (Pump Now)</Text>
       </TouchableOpacity>

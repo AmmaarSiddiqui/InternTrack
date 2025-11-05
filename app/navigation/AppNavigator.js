@@ -24,7 +24,6 @@ import ProfileStack from "./ProfileStack";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
 // Custom dark theme
 const CustomDarkTheme = {
   ...DarkTheme,
@@ -84,11 +83,20 @@ function MainAppTabs() {
 }
 
 export default function AppNavigator() {
-  const { user, profile } = useAuth();
+  const { user, profile, profileLoading } = useAuth();
+  
+ const navKey = !user
+   ? "auth"
+   : profileLoading
+   ? "boot"
+   : profile === null
+   ? "create"
+   : "app";
 
   return (
-    <NavigationContainer theme={CustomDarkTheme}>
+     <NavigationContainer theme={CustomDarkTheme}>
       <Stack.Navigator
+        key={navKey}          
         screenOptions={{
           headerStyle: {
             backgroundColor: CustomDarkTheme.colors.card,
@@ -125,7 +133,7 @@ export default function AppNavigator() {
             />
             <Stack.Screen
               name="PumpNow"
-              component={PumpNowScreen}
+              component={MatchScreen}
               options={{ title: "Find a Partner" }}
             />
             <Stack.Screen
