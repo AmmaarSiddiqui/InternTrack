@@ -20,7 +20,39 @@
 
 # Directory Structure
 
-<img width="504" height="750" alt="image" src="https://github.com/user-attachments/assets/013e40b5-5560-489e-a94e-e10cec39ba86" />
+Partner-And-Pump/
+├─ .expo/
+├─ .github/
+│  └─ workflows/
+│     └─ ci-js.yml
+├─ IOS/
+├─ __tests__/
+├─ app/
+├─ functions/
+│  ├─ __tests__/
+│  ├─ src/
+│  │  ├─ match/
+│  │  ├─ notifications/
+│  │  └─ validation/
+│  ├─ jest.config.js
+│  ├─ package.json
+│  ├─ package-lock.json
+│  └─ tsconfig.json
+├─ node_modules/
+├─ reports/
+├─ src/
+├─ .gitignore
+├─ App.js
+├─ DeveloperDocument.md
+├─ README.md
+├─ USERMANUAL.md
+├─ app.json
+├─ babel.config.js
+├─ coding-guidelines.md
+├─ package-lock.json
+├─ package.json
+└─ tsconfig.json
+
 
 
 # How to build software: 
@@ -53,7 +85,6 @@ Fast dev via Expo Go (no native build)
 #### From repo root
 #### Clear cache on first run while we’re evolving dependencies
 npx expo start -c
-
 
 Scan the QR with Expo Go (iOS/Android) to launch the app.
 
@@ -162,12 +193,3 @@ When you are done with all the manual tests, add a tag to name the release:
 
 git tag -a v1.0.0 -m "Partner & Pump v1.0.0 stable release"
 git push origin v1.0.0
-
-
-
-
-
-
-
-
-
