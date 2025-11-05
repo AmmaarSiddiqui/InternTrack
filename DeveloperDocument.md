@@ -19,7 +19,7 @@
       cd partner-and-pump
 
 # Directory Structure
-
+ ```
 Partner-And-Pump/
 ├─ .expo/
 ├─ .github/
@@ -52,39 +52,49 @@ Partner-And-Pump/
 ├─ package-lock.json
 ├─ package.json
 └─ tsconfig.json
-
+```
 
 
 # How to build software: 
 This project has two build targets:
 
-Mobile client (Expo React Native) — lives in the app/ folder (started from the repo root).
+1. Mobile client (Expo React Native) — lives in the app/ folder (started from the repo root).
 
-Backend (Firebase Cloud Functions, TypeScript) — lives in functions/.
+2. Backend (Firebase Cloud Functions, TypeScript) — lives in functions/.
 
 Follow the steps below to build all components locally and verify everything with tests.
 
 #### Install once
+```
 npm i -g firebase-tools   # deploy/emulate backend
+```
+
 #### Expo CLI is invoked via npx, no global install required
 
 1) Clone & install
+```
 git clone https://github.com/AmmaarSiddiqui/Partner-And-Pump.git
 cd Partner-And-Pump
-
+```
 #### Install root dependencies (Expo app and tooling)
+```
 npm ci
+```
 
 #### Install backend deps
+```
 cd functions
 npm ci
 cd ..
+```
 
 2) Build & run the mobile client (Expo)
-Fast dev via Expo Go (no native build)
 #### From repo root
 #### Clear cache on first run while we’re evolving dependencies
+```
+cd ~
 npx expo start -c
+```
 
 Scan the QR with Expo Go (iOS/Android) to launch the app.
 
@@ -95,20 +105,24 @@ This will prebuild native projects and open the iOS Simulator.
 
 3) Build & run the backend (Cloud Functions)
 
-TypeScript → JavaScript build:
-
+### TypeScript → JavaScript build:
+```
 cd functions
 npm run build    # transpiles to lib/
+```
 
 4) Lint & type-check (optional but recommended)
 #### Frontend (if ESLint config is present)
+```
 npm run lint
+```
 
 # Backend TS type-check
+```
 cd functions
 npm run typecheck     # or: npx tsc --noEmit
 cd ..
-
+```
 
 #### How to run tests: 
 Testing ensures that both the **mobile client (Expo app)** and **Firebase backend** perform correctly and remain stable as new features are introduced.
@@ -119,25 +133,27 @@ Continuous Integration (CI) is configured through GitHub Actions to automaticall
 
 
 
-Jest is used for all test files both frontend and backend which are named __tests__/`.
+Jest is used for all test files both frontend and backend which are named `__tests__/`.
 
 Backend and Frontend Tests (Firebase Functions)
 1. Navigate to the backend directory:
+```
 cd functions
 npm install
 Run all Jest tests:
 npm test
-
+```
 
 ---
 # How to Add a New Test
-Add or update the code you want to test under functions/src/.... For example, if you create a new helper called formatInviteMessage in functions/src/invites/formatInviteMessage.ts, that’s the code you’ll be testing.
+Add or update the code you want to test under `functions/src/...` For example, if you create a new helper called formatInviteMessage in `functions/src/invites/formatInviteMessage.ts`, that’s the code you’ll be testing.
 
-Create a new test file in functions/__tests__/ with a matching purpose and a .test.ts suffix. For example: functions/__tests__/formatInviteMessage.test.ts.
+Create a new test file in `functions/__tests__/` with a matching purpose and a `.test.ts` suffix. 
+For example: `functions/__tests__/formatInviteMessage.test.ts.`
 
-In that test file, import the function(s) you want to verify from functions/src/....
+In that test file, import the function(s) you want to verify from `functions/src/....`
 
-Write Jest tests using describe(...), it(...), and expect(...).
+Write Jest tests using `describe(...)`, `it(...)`, and `expect(...)`.
 
    
 Include at least one “happy path” test (valid input returns the correct result).
@@ -145,31 +161,28 @@ Include at least one defensive/edge case test (bad/missing input is handled safe
 If the code has side effects (like recording a notification), assert on those effects.
 
 From inside the functions/ directory, run:
+```
+npm install   # only needed the first time on a new machine
+npm test      # runs all Jest tests locally
+```
 
-   
-   npm install   # only needed the first time on a new machine
-   npm test      # runs all Jest tests locally
-   
 
+Make sure your new test passes locally.
 
-   Make sure your new test passes locally.
+Commit both:   
+- the source file you added or modified in `functions/src/...`, and
+- the new test file in `functions/__tests__/`.
 
-Commit both:
-
-   
-the source file you added or modified in functions/src/..., and
-the new test file in functions/__tests__/.
-
-Push your changes or open a pull request to main or develop. GitHub Actions (from .github/workflows/ci-js.yml) will automatically cd into functions/, run npm install, and execute all .test.ts files in functions/__tests__/. If your new test fails in CI, the PR/build will be marked as failed and can’t be merged until it’s fixed.
+Push your changes or open a pull request to main or develop. GitHub Actions (from `.github/workflows/ci-js.yml`) will automatically cd into `functions/`, run `npm install`, and execute all `.test.ts` files in `functions/__tests__/`. If your new test fails in CI, the PR/build will be marked as failed and can’t be merged until it’s fixed.
 
 Keep tests independent — try not to rely on results from other tests.
 
-Name tests after the feature or function (e.g., ProfileValidation.test.ts).
+Name tests after the feature or function (e.g., `ProfileValidation.test.ts`).
 
 Use mocks for Firebase calls only when integration tests aren’t needed.
 
 Commit your test with the corresponding feature update.
-Keep all tests in __test__
+Keep all tests in `__test__`
 
 ---
 # How to build a new release
@@ -190,6 +203,7 @@ Although most build and deployment steps are automated, developers should still 
 The final check involves running through the app’s onboarding and matching flow to confirm there are no regressions before tagging the release.
 
 When you are done with all the manual tests, add a tag to name the release:
-
+```
 git tag -a v1.0.0 -m "Partner & Pump v1.0.0 stable release"
 git push origin v1.0.0
+```
