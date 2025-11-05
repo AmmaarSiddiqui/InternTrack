@@ -29,6 +29,7 @@ export default function MatchScreen() {
     { label: "Upper/Lower", icon: "↕️" },
     { label: "Full Body", icon: "🏋️" },
     { label: "Bro Split", icon: "💪" },
+    { label: "Sports", icon: "⚽" },
   ];
 
   const categories =
