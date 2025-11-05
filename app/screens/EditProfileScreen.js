@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, ActivityIndicator,
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../state/useAuthContext";
 import { auth, db } from "../services/firebase";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const GOAL_OPTIONS = ["Strength", "Aesthetics", "Health", "Weight-loss", "Endurance", "Sports"];
 const TIME_OPTIONS = [
@@ -44,37 +44,49 @@ export default function EditProfileScreen() {
     setDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));
   };
 
-  const save = async() => {
-    setError("");
+const save = async () => {
+  setError("");
+  const uid = auth.currentUser?.uid;
+  if (!uid) { setError("You must be signed in to save your profile."); return; }
 
-    const uid = auth.currentUser?.uid;
-    if (!uid) {
-      setError("You must be signed in to save your profile.");
-      return;
-    }
+  const toSlug = s => (s||"").trim().toLowerCase();
+  const trim  = s => (s||"").trim();
 
-    const payload = {
-      name: name.trim(),
-      goal: goal.trim(),
-      gym: gym.trim(),               // keeping as string (compatible with your ProfileScreen)
-      time: time.trim(),
-      days,
-      about: about.trim(),
-      fitnessLevel: fitnessLevel.trim(),
-      split: split.trim(),
-    };
-
-    // Optimistic UI: update local context and navigate immediately
-    setProfile((prev) => ({ ...(prev || {}), ...payload }));
-    navigation.goBack();
-    const ref = doc(db, "profiles", uid);
-    await setDoc(ref, payload, { merge: true });
-    try {
-    await AsyncStorage.setItem(`profile:${uid}`, JSON.stringify({ ...(profile||{}), ...payload }));
-  } catch {}
-
-  navigation.goBack();
+  const payload = {
+    name: trim(name),
+    goal: toSlug(goal),
+    gym: trim(gym),
+    time: trim(time),
+    days: Array.isArray(days) ? [...new Set(days)] : [],
+    about: trim(about),
+    fitnessLevel: trim(fitnessLevel),
+    split: trim(split),
+    updatedAt: serverTimestamp(),
   };
+
+  setSaving(true);
+  //  optimistic update so ProfileScreen has data immediately
+  setProfile(prev => ({ ...(prev||{}), ...payload, updatedAt: new Date() }));
+
+  //  leave this screen immediately; no chance to render a loader here
+  navigation.goBack();
+
+  //  write to Firestore in the background; no UI block
+  setDoc(doc(db, "profiles", uid), payload, { merge: true })
+    .then(() => {
+      // mirror cache (don’t await)
+      (async () => {
+        try {
+          await AsyncStorage.setItem(`profile:${uid}`, JSON.stringify({ ...(profile||{}), ...payload, updatedAt: Date.now() }));
+        } catch {}
+      })();
+    })
+    .catch(e => {
+      console.warn("[EditProfile] save error:", e);
+      // optional: toast failure and/or revert optimistic change
+    })
+    .finally(() => setSaving(false));
+};
 
   return (
     <ScrollView style={s.container} contentContainerStyle={{ paddingBottom: 40 }}>

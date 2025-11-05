@@ -13,90 +13,67 @@ export function AuthProvider({ children }) {
  const [profile, setProfile] = React.useState(undefined);
  const [syncedOnce, setSyncedOnce] = React.useState(false); // first server snapshot arrived
 
-  React.useEffect(() => {
-    let unsubAuth;
-    let unsubProfile;
-    let bootTimeout;
-    const BOOT_TIMEOUT_MS = 4000;
-    unsubAuth = onAuthStateChanged(auth, async (u) => {
-      setUser(u);
-      setProfile(undefined); // start loading on every auth change
-      setSyncedOnce(false);
+React.useEffect(() => {
+  let unsubAuth, unsubProfile;
 
-      // clean up any previous profile listener
-      if (unsubProfile) {
-        unsubProfile();
-        unsubProfile = undefined;
-      }
+  unsubAuth = onAuthStateChanged(auth, async (u) => {
+    setUser(u);
 
-      if (!u) {
-        setProfile(null);
-        return;
-      }
-      let hadCache = false;
-      try {
-        const cached = await AsyncStorage.getItem(`profile:${u.uid}`);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          if (parsed && typeof parsed === "object") setProfile(parsed);
-          hadCache = true;
-        }
-      } catch {}
-      if (!hadCache) {
-        bootTimeout = setTimeout(() => {
-          setProfile((p) => (p === undefined ? null : p));
-        }, BOOT_TIMEOUT_MS);
-      }
+    if (unsubProfile) { unsubProfile(); unsubProfile = undefined; }
 
+    if (!u) {
+  setProfile(null);
+  return;
+}
+
+  // apply cache immediately; no "undefined" gap
+  let cached = null;
+  try {
+    const raw = await AsyncStorage.getItem(`profile:${u.uid}`);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === "object") cached = parsed;
+    }
+  } catch {}
+  setProfile(cached ?? null);
+
+      // Realtime (no includeMetadataChanges)
       const ref = doc(db, "profiles", u.uid);
       unsubProfile = onSnapshot(
-  ref,
-  { includeMetadataChanges: true },
-  async (snap) => {
-    // ✅ don't bail on pending writes — we still want to unblock UI
-    if (bootTimeout) { clearTimeout(bootTimeout); bootTimeout = undefined; }
+        ref,
+        async (snap) => {
+          const data = snap.exists() ? snap.data() : null;
+          setProfile(data);   // object or null — never undefined
+          try {
+            if (data) await AsyncStorage.setItem(`profile:${u.uid}`, JSON.stringify(data));
+            else await AsyncStorage.removeItem(`profile:${u.uid}`);
+          } catch {}
+        },
+        (err) => {
+          console.warn("[AuthProvider] profile listen error:", err);
+          // keep current profile; don't set undefined
+        }
+      );
 
-    // ✅ mark that we've synced *something* so profileLoading can stop
-    setSyncedOnce((was) => was || true);
+    // optional: warm server once (non-blocking)
+    (async () => {
+      try {
+        const { getDocFromServer } = await import("firebase/firestore");
+        await getDocFromServer(ref);
+      } catch {}
+    })();
+  });
 
-    const data = snap.exists() ? snap.data() : null;
-    setProfile(data);
+  return () => { if (unsubProfile) unsubProfile(); if (unsubAuth) unsubAuth(); };
+}, []);
 
-    // write-through cache
-    try {
-      if (data) {
-        await AsyncStorage.setItem(`profile:${u.uid}`, JSON.stringify(data));
-      } else {
-        await AsyncStorage.removeItem(`profile:${u.uid}`);
-      }
-    } catch {}
-  },
-  (err) => {
-    console.warn("[AuthProvider] profile listen error:", err);
-    if (bootTimeout) { clearTimeout(bootTimeout); bootTimeout = undefined; }
-    setProfile((p) => (p === undefined ? (hadCache ? p : null) : p));
-    // also ensure we don't spin forever
-    setSyncedOnce((was) => was || true);
-  }
-);
-    });
 
-    return () => {
-      if (unsubProfile) unsubProfile();
-      if (unsubAuth) unsubAuth();
-      if (bootTimeout) clearTimeout(bootTimeout);
-    };
-  }, []);
-
-    const value = React.useMemo(
-      () => ({
-        user,
-        profile,                      // undefined | null | object
-       profileLoading: profile === undefined, // simpler & avoids stalls
-        setProfile,
-      }),
-      [user, profile, syncedOnce]
-    );
+   const value = React.useMemo(() => ({
+  user,
+  profile,                                  // null | object
+  profileLoading: !!user && profile === undefined, // only pre-first cache read
+  setProfile,
+}), [user, profile]);
 
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

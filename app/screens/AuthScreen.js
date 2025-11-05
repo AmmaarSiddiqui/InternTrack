@@ -1,41 +1,18 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Pressable,
-  ActivityIndicator,
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
-import { auth, db } from "../services/firebase";
-import {
-  onAuthStateChanged,
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  updateProfile,
-  signOut,
-} from "firebase/auth";
+// app/screens/AuthScreen.js
+import React, { useState } from "react";
+import { View, Text, TextInput, Pressable, Alert, KeyboardAvoidingView, Platform } from "react-native";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { useAuth } from "../state/useAuthContext";
+import { auth, db } from "../services/firebase"; // adjust path if needed
 
 export default function AuthScreen() {
-  const { user, setUser } = useAuth();
-  const [booting, setBooting] = useState(true);
-  const [mode, setMode] = useState("signup"); // "signup" or "login"
+  const [mode, setMode] = useState("login"); // "login" | "signup"
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
 
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u);
-      setBooting(false);
-    });
-    return unsub;
-  }, []);
+  const isSignup = mode === "signup";
 
   const onSignup = async () => {
     if (!name.trim() || !email.trim() || !password) {
@@ -54,13 +31,32 @@ export default function AuthScreen() {
     try {
       const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
       await updateProfile(cred.user, { displayName: name.trim() });
+
+      // optional: create a minimal user doc; DO NOT create 'profiles' here.
       await setDoc(doc(db, "users", cred.user.uid), {
         uid: cred.user.uid,
         name: name.trim(),
         email: email.trim().toLowerCase(),
         createdAt: new Date(),
       });
-      Alert.alert("Success", "Account created successfully!");
+
+      const profileRef = doc(db, "profiles", cred.user.uid);
+      await setDoc(profileRef, {
+        name: name.trim(),
+        goal: "strength",
+        gym: "",
+        time: "Morning (5AM–9AM)",
+        days: [],
+        about: "",
+        fitnessLevel: "Beginner",
+        split: "Push/Pull/Legs",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }, { merge: true });
+
+
+      // Do NOT navigate here. AuthProvider will detect user and AppNavigator will switch to Boot -> Create/Main.
+      Alert.alert("Success", "Account created! Finishing setup…");
     } catch (e) {
       Alert.alert("Sign up failed", e.message);
     }
@@ -73,21 +69,11 @@ export default function AuthScreen() {
     }
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
-      Alert.alert("Welcome back!");
+      // No manual navigation; provider + navigator will switch branches automatically.
     } catch (e) {
       Alert.alert("Login failed", e.message);
     }
   };
-
-  if (booting) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator />
-      </View>
-    );
-  }
-
-  const isSignup = mode === "signup";
 
   return (
     <KeyboardAvoidingView
@@ -96,13 +82,13 @@ export default function AuthScreen() {
     >
       <View style={{ flex: 1, padding: 24, gap: 24 }}>
         <View style={{ alignItems: "center", marginTop: 40 }}>
-          <Text style={{ color: "white", fontSize: 28, fontWeight: "700" }}>
-            Partner & Pump
-          </Text>
+          <Text style={{ color: "white", fontSize: 28, fontWeight: "700" }}>Partner & Pump</Text>
           <Text style={{ color: "#9aa0a6", marginTop: 6 }}>
             {isSignup ? "Create your account" : "Welcome back"}
           </Text>
         </View>
+
+        {/* Toggle */}
         <View
           style={{
             flexDirection: "row",
@@ -117,6 +103,8 @@ export default function AuthScreen() {
           <TabButton active={isSignup} label="Sign up" onPress={() => setMode("signup")} />
           <TabButton active={!isSignup} label="Log in" onPress={() => setMode("login")} />
         </View>
+
+        {/* Form */}
         <View style={{ gap: 14, marginTop: 12 }}>
           {isSignup && (
             <FormInput
@@ -152,6 +140,8 @@ export default function AuthScreen() {
             />
           )}
         </View>
+
+        {/* Submit */}
         <Pressable
           onPress={isSignup ? onSignup : onLogin}
           style={({ pressed }) => ({
@@ -166,14 +156,11 @@ export default function AuthScreen() {
             {isSignup ? "Create account" : "Log in"}
           </Text>
         </Pressable>
-        <Pressable
-          onPress={() => setMode(isSignup ? "login" : "signup")}
-          style={{ alignSelf: "center", marginTop: 6 }}
-        >
+
+        {/* Switch helper */}
+        <Pressable onPress={() => setMode(isSignup ? "login" : "signup")} style={{ alignSelf: "center", marginTop: 6 }}>
           <Text style={{ color: "#9aa0a6" }}>
-            {isSignup
-              ? "Already have an account? Log in"
-              : "New here? Create an account"}
+            {isSignup ? "Already have an account? Log in" : "New here? Create an account"}
           </Text>
         </Pressable>
       </View>
@@ -193,15 +180,12 @@ function TabButton({ active, label, onPress }) {
         alignItems: "center",
       }}
     >
-      <Text style={{ color: active ? "white" : "#9aa0a6", fontWeight: "600" }}>
-        {label}
-      </Text>
+      <Text style={{ color: active ? "white" : "#9aa0a6", fontWeight: "600" }}>{label}</Text>
     </Pressable>
   );
 }
 
-function FormInput(props) {
-  const { label, ...rest } = props;
+function FormInput({ label, ...rest }) {
   return (
     <View style={{ gap: 6 }}>
       <Text style={{ color: "#c7cbd1", fontSize: 12 }}>{label}</Text>

@@ -35,19 +35,22 @@ export default function Index() {
 
   // Listen for login/logout state changes
   useEffect(() => {
-  let unsub = onAuthStateChanged(auth, async (u) => {
+  const unsub = onAuthStateChanged(auth, async (u) => {
     setUser(u);
+
     if (!u) {
-      setBooting(false);
+      console.log("[Index] no user -> stop booting");
+      setBooting(false);          // <- you should hit this
       return;
     }
 
     setCheckingProfile(true);
     try {
+      console.log("[Index] checking profile...");
       const snap = await getDoc(doc(db, "profiles", u.uid));
       const hasProfile = snap.exists();
+      console.log("[Index] hasProfile?", hasProfile);
 
-      // ✅ Automatically route the user
       if (hasProfile) {
         navigation.reset({ index: 0, routes: [{ name: "Home" }] });
       } else {
@@ -60,7 +63,8 @@ export default function Index() {
       setCheckingProfile(false);
     }
   });
-  return () => unsub && unsub();
+
+  return () => unsub();
 }, [navigation]);
 
   const onSignup = async () => {
