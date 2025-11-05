@@ -97,7 +97,7 @@ cd ..
 cd ~
 npx expo start -c
 ```
-
+Download the Expo Go App. 
 Scan the QR with Expo Go (iOS/Android) to launch the app.
 
 Make sure your phone and computer are on the same network.
