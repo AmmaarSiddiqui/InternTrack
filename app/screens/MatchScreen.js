@@ -13,8 +13,8 @@ export default function MatchScreen() {
   const { colors } = useTheme();
   const navigation = useNavigation();
 
-  // mock categories for display only
-  const categories = [
+  // categories for each mode
+  const pumpNowCategories = [
     { label: "Push", icon: "💪" },
     { label: "Legs", icon: "🦵" },
     { label: "Sports", icon: "⚽" },
@@ -22,6 +22,17 @@ export default function MatchScreen() {
     { label: "Full Body", icon: "🏋️" },
     { label: "Yoga", icon: "🧘" },
   ];
+
+  // requested long-term categories
+  const longTermCategories = [
+    { label: "Push/Pull/Legs", icon: "🔁" },
+    { label: "Upper/Lower", icon: "↕️" },
+    { label: "Full Body", icon: "🏋️" },
+    { label: "Bro Split", icon: "💪" },
+  ];
+
+  const categories =
+    mode === "longTerm" ? longTermCategories : pumpNowCategories;
 
   // render title text based on selected mode
   const titleText = mode === "pumpNow" ? "Pump Now" : "Long-Term";
