@@ -9,6 +9,8 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import { auth, db } from "./services/firebase";
 import {
   onAuthStateChanged,
@@ -29,27 +31,37 @@ export default function Index() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
+  const navigation = useNavigation();
 
   // Listen for login/logout state changes
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (u) => {
+  let unsub = onAuthStateChanged(auth, async (u) => {
     setUser(u);
-    if (!u) { setBooting(false); return; }
-    // check Firestore for existing profile
-    //     setCheckingProfile(true);
+    if (!u) {
+      setBooting(false);
+      return;
+    }
+
+    setCheckingProfile(true);
     try {
       const snap = await getDoc(doc(db, "profiles", u.uid));
-      setHasProfile(snap.exists());
+      const hasProfile = snap.exists();
+
+      // ✅ Automatically route the user
+      if (hasProfile) {
+        navigation.reset({ index: 0, routes: [{ name: "Home" }] });
+      } else {
+        navigation.reset({ index: 0, routes: [{ name: "EditProfile" }] });
+      }
     } catch (e) {
       console.warn("profile check failed:", e);
-      setHasProfile(false);
     } finally {
       setBooting(false);
       setCheckingProfile(false);
     }
   });
-    return unsub;
-  }, []);
+  return () => unsub && unsub();
+}, [navigation]);
 
   const onSignup = async () => {
     if (!name.trim() || !email.trim() || !password) {
@@ -117,75 +129,26 @@ export default function Index() {
     }
   };
 
-  if (booting) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator />
-      </View>
-    );
-  }
-
-  // temporary logged-in view
-if (user) {
-  if (checkingProfile) {
-    return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#0f0f10" }}>
-        <ActivityIndicator />
-        <Text style={{ color: "#9aa0a6", marginTop: 8 }}>Checking your profile…</Text>
-      </View>
-    );
-  }
-
-  // If profile exists, render your main app/home (or navigate to it)
-  if (hasProfile) {
-    // If you have a navigator, you could navigate/reset here instead.
-    return (
-      <View style={{ flex: 1, backgroundColor: "#0f0f10", padding: 24 }}>
-        <View style={{ alignItems: "center", marginTop: 60 }}>
-          <Text style={{ color: "white", fontSize: 28, fontWeight: "700" }}>Partner & Pump</Text>
-          <Text style={{ color: "#9aa0a6", marginTop: 10 }}>
-            Welcome, {user.displayName || user.email} 👋
-          </Text>
-          <Text style={{ color: "#9aa0a6", marginTop: 6 }}>
-            Profile found — loading your app…
-          </Text>
-        </View>
-        {/* TODO: If you're using React Navigation, replace this whole return
-            with a navigation reset to your main stack, e.g.:
-            navigation.reset({ index: 0, routes: [{ name: "App" }] });
-        */}
-        <Pressable onPress={onLogout} style={{ backgroundColor:"#1a1b1e", paddingVertical:14, borderRadius:12, alignItems:"center", marginTop:60 }}>
-          <Text style={{ color: "white", fontWeight: "700" }}>Log out</Text>
-        </Pressable>
-      </View>
-    );
-  }
-  // No profile yet — show a CTA to create it (or navigate to EditProfile)
+  if (booting || checkingProfile) {
   return (
-    <View style={{ flex: 1, backgroundColor: "#0f0f10", padding: 24 }}>
-      <View style={{ alignItems: "center", marginTop: 60 }}>
-        <Text style={{ color: "white", fontSize: 24, fontWeight: "700" }}>Complete your profile</Text>
-        <Text style={{ color: "#9aa0a6", marginTop: 8, textAlign: "center" }}>
-          We need a few details (goal, days, gym) to match you with partners.
-        </Text>
-      </View>
-      {/* If you have navigation here, do: navigation.navigate("EditProfile") */}
-      <Pressable
-        onPress={() => {/* navigation.navigate("EditProfile"); */}}
-        style={({ pressed }) => ({
-          backgroundColor: pressed ? "#2b5cff" : "#3b6cff",
-          paddingVertical: 14, borderRadius: 12, alignItems: "center", marginTop: 28,
-        })}
-      >
-        <Text style={{ color: "white", fontWeight: "700" }}>Create Profile</Text>
-      </Pressable>
-
-      <Pressable onPress={onLogout} style={{ backgroundColor:"#1a1b1e", paddingVertical:14, borderRadius:12, alignItems:"center", marginTop:16 }}>
-        <Text style={{ color: "white", fontWeight: "700" }}>Log out</Text>
-      </Pressable>
+    <View
+      style={{
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#0f0f10",
+      }}
+    >
+      <ActivityIndicator />
+      <Text style={{ color: "#9aa0a6", marginTop: 8 }}>
+        {user ? "Checking your profile…" : "Booting…"}
+      </Text>
     </View>
   );
 }
+
+ 
+  
 
   // Login / Signup form
   const isSignup = mode === "signup";

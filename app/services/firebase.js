@@ -3,6 +3,7 @@ import {
   initializeAuth,
   getReactNativePersistence,
 } from "firebase/auth";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { initializeFirestore, setLogLevel } from "firebase/firestore";
 
@@ -19,12 +20,10 @@ const firebaseConfig = {
 // Ensure we only initialize once
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
-// ✅ Persistent Auth across restarts
 export const auth = initializeAuth(app, {
   persistence: getReactNativePersistence(AsyncStorage),
 });
 
-// ✅ Firestore tuned for React Native (iOS safe)
 export const db = initializeFirestore(app, {
   experimentalAutoDetectLongPolling: true,  // lets it use WebSockets when possible
   useFetchStreams: true,                    // streams when available

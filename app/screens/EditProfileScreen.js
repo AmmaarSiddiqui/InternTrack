@@ -4,8 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../state/useAuthContext";
 import { auth, db } from "../services/firebase";
 import { doc, setDoc } from "firebase/firestore";
-
-const GOAL_OPTIONS = ["strength", "aesthetics", "health", "weight-loss", "endurance"];
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const GOAL_OPTIONS = ["Strength", "Aesthetics", "Health", "Weight-loss", "Endurance", "Sports"];
 const TIME_OPTIONS = [
   "Morning (5AM–9AM)",
   "Midday (10AM–1PM)",
@@ -14,7 +14,7 @@ const TIME_OPTIONS = [
   "Late Night (10PM–12AM)",
 ];
 const FITNESS_LEVEL_OPTIONS = ["Beginner", "Intermediate", "Advanced"];
-const SPLIT_OPTIONS = ["Push/Pull/Legs", "Upper/Lower", "Full Body", "Bro Split", "Bodypart Split"];
+const SPLIT_OPTIONS = ["Push/Pull/Legs", "Upper/Lower", "Full Body", "Bro Split"];
 
 export default function EditProfileScreen() {
   const navigation = useNavigation();
@@ -44,7 +44,7 @@ export default function EditProfileScreen() {
     setDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));
   };
 
-  const save = () => {
+  const save = async() => {
     setError("");
 
     const uid = auth.currentUser?.uid;
@@ -67,16 +67,13 @@ export default function EditProfileScreen() {
     // Optimistic UI: update local context and navigate immediately
     setProfile((prev) => ({ ...(prev || {}), ...payload }));
     navigation.goBack();
+    const ref = doc(db, "profiles", uid);
+    await setDoc(ref, payload, { merge: true });
+    try {
+    await AsyncStorage.setItem(`profile:${uid}`, JSON.stringify({ ...(profile||{}), ...payload }));
+  } catch {}
 
-    // Fire-and-forget write (no blocking UI)
-    setSaving(true);
-    setDoc(doc(db, "profiles", uid), payload, { merge: true })
-      .then(() => {})
-      .catch((e) => {
-        console.warn("Save profile error:", e?.message || e);
-        // Optional: show a toast here if you have one
-      })
-      .finally(() => setSaving(false));
+  navigation.goBack();
   };
 
   return (
