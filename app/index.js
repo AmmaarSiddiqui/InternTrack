@@ -17,11 +17,13 @@ import {
   updateProfile,
   signOut,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export default function Index() {
   const [booting, setBooting] = useState(true);
   const [user, setUser] = useState(null);
+  const [checkingProfile, setCheckingProfile] = useState(false);
+  const [hasProfile, setHasProfile] = useState(false);
   const [mode, setMode] = useState("signup"); // "signup" or "login"
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,10 +32,22 @@ export default function Index() {
 
   // Listen for login/logout state changes
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      setUser(u);
+    const unsub = onAuthStateChanged(auth, async (u) => {
+    setUser(u);
+    if (!u) { setBooting(false); return; }
+    // check Firestore for existing profile
+    //     setCheckingProfile(true);
+    try {
+      const snap = await getDoc(doc(db, "profiles", u.uid));
+      setHasProfile(snap.exists());
+    } catch (e) {
+      console.warn("profile check failed:", e);
+      setHasProfile(false);
+    } finally {
       setBooting(false);
-    });
+      setCheckingProfile(false);
+    }
+  });
     return unsub;
   }, []);
 
@@ -62,6 +76,18 @@ export default function Index() {
         email: email.trim().toLowerCase(),
         createdAt: new Date(),
       });
+
+      await setDoc(doc(db, "profiles", cred.user.uid), {
+        name: name.trim(),
+        goal: "strength",
+        gym: "",
+        time: "Morning (5AM–9AM)",
+        days: [],
+        about: "",
+        fitnessLevel: "Beginner",
+        split: "Push/Pull/Legs",
+        updatedAt: new Date(),
+      }, { merge: true });
 
       Alert.alert("Success", "Account created successfully!");
     } catch (e) {
@@ -100,33 +126,66 @@ export default function Index() {
   }
 
   // temporary logged-in view
-  if (user) {
+if (user) {
+  if (checkingProfile) {
+    return (
+      <View style={{ flex: 1, alignItems: "center", justifyContent: "center", backgroundColor: "#0f0f10" }}>
+        <ActivityIndicator />
+        <Text style={{ color: "#9aa0a6", marginTop: 8 }}>Checking your profile…</Text>
+      </View>
+    );
+  }
+
+  // If profile exists, render your main app/home (or navigate to it)
+  if (hasProfile) {
+    // If you have a navigator, you could navigate/reset here instead.
     return (
       <View style={{ flex: 1, backgroundColor: "#0f0f10", padding: 24 }}>
         <View style={{ alignItems: "center", marginTop: 60 }}>
-          <Text style={{ color: "white", fontSize: 28, fontWeight: "700" }}>
-            Partner & Pump
-          </Text>
+          <Text style={{ color: "white", fontSize: 28, fontWeight: "700" }}>Partner & Pump</Text>
           <Text style={{ color: "#9aa0a6", marginTop: 10 }}>
             Welcome, {user.displayName || user.email} 👋
           </Text>
+          <Text style={{ color: "#9aa0a6", marginTop: 6 }}>
+            Profile found — loading your app…
+          </Text>
         </View>
-
-        <Pressable
-          onPress={onLogout}
-          style={({ pressed }) => ({
-            backgroundColor: pressed ? "#2b2f36" : "#1a1b1e",
-            paddingVertical: 14,
-            borderRadius: 12,
-            alignItems: "center",
-            marginTop: 60,
-          })}
-        >
+        {/* TODO: If you're using React Navigation, replace this whole return
+            with a navigation reset to your main stack, e.g.:
+            navigation.reset({ index: 0, routes: [{ name: "App" }] });
+        */}
+        <Pressable onPress={onLogout} style={{ backgroundColor:"#1a1b1e", paddingVertical:14, borderRadius:12, alignItems:"center", marginTop:60 }}>
           <Text style={{ color: "white", fontWeight: "700" }}>Log out</Text>
         </Pressable>
       </View>
     );
   }
+  // No profile yet — show a CTA to create it (or navigate to EditProfile)
+  return (
+    <View style={{ flex: 1, backgroundColor: "#0f0f10", padding: 24 }}>
+      <View style={{ alignItems: "center", marginTop: 60 }}>
+        <Text style={{ color: "white", fontSize: 24, fontWeight: "700" }}>Complete your profile</Text>
+        <Text style={{ color: "#9aa0a6", marginTop: 8, textAlign: "center" }}>
+          We need a few details (goal, days, gym) to match you with partners.
+        </Text>
+      </View>
+      {/* If you have navigation here, do: navigation.navigate("EditProfile") */}
+      <Pressable
+        onPress={() => {/* navigation.navigate("EditProfile"); */}}
+        style={({ pressed }) => ({
+          backgroundColor: pressed ? "#2b5cff" : "#3b6cff",
+          paddingVertical: 14, borderRadius: 12, alignItems: "center", marginTop: 28,
+        })}
+      >
+        <Text style={{ color: "white", fontWeight: "700" }}>Create Profile</Text>
+      </Pressable>
+
+      <Pressable onPress={onLogout} style={{ backgroundColor:"#1a1b1e", paddingVertical:14, borderRadius:12, alignItems:"center", marginTop:16 }}>
+        <Text style={{ color: "white", fontWeight: "700" }}>Log out</Text>
+      </Pressable>
+    </View>
+  );
+}
 
   // Login / Signup form
   const isSignup = mode === "signup";

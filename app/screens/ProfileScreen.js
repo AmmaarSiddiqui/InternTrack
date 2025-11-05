@@ -1,12 +1,19 @@
 import React, { useLayoutEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { useAuth } from "../state/useAuthContext";
+import { getDoc, doc, onSnapshot } from "firebase/firestore";
+import { db, auth } from "../services/firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { ActivityIndicator } from "react-native";
+
 
 
 export default function ProfileScreen() {
   const navigation = useNavigation();
-  const { profile } = useAuth(); // { name, goal, gym } (for now)
+const { user, profile, setProfile } = useAuth();
+const [loading, setLoading] = React.useState(true);
+const [status, setStatus] = React.useState("Starting…");
 
   // Header pills
   useLayoutEffect(() => {
@@ -24,52 +31,125 @@ export default function ProfileScreen() {
   });
 }, [navigation]);
 
+React.useEffect(() => {
+  let canceled = false;
+  let unsubAuth, unsubProfile;
 
-  // If no profile yet, keep it simple
-  if (!profile) {
-    return (
-      <View style={{ flex: 1, backgroundColor: "#000", alignItems: "center", justifyContent: "center" }}>
-        <Text style={{ color: "#fff" }}>No profile yet.</Text>
-      </View>
+  setLoading(true);
+
+  unsubAuth = onAuthStateChanged(auth, (u) => {
+    if (!u) {
+      if (!canceled) { setProfile?.(null); setLoading(false); }
+      return;
+    }
+
+    const ref = doc(db, "profiles", u.uid);
+
+    // Single listener; ignore local-pending so we don't clobber optimistic UI
+    unsubProfile = onSnapshot(
+      ref,
+      { includeMetadataChanges: true },
+      (snap) => {
+        if (canceled) return;
+
+        // Keep optimistic data until server confirms
+        if (snap.metadata.hasPendingWrites) {
+          setLoading(false);
+          return;
+        }
+
+        // Apply server-acknowledged data (or null if missing)
+        setProfile?.(snap.exists() ? snap.data() : null);
+        setLoading(false);
+      },
+      (err) => {
+        console.warn("[Profile] onSnapshot error:", err);
+        if (!canceled) setLoading(false);
+      }
     );
-  }
+  });
+
+  return () => {
+    canceled = true;
+    if (unsubProfile) unsubProfile();
+    if (unsubAuth) unsubAuth();
+  };
+}, [setProfile]);
+
+
+  if (loading) {
+  return (
+    <View style={{ flex: 1, backgroundColor: "#000", alignItems: "center", justifyContent: "center" }}>
+      <ActivityIndicator color="#fff" />
+      <Text style={{ color: "#9ca3af", marginTop: 8 }}>Loading profile…</Text>
+    </View>
+  );
+}
+
+if (!profile) {
+  return (
+    <View style={{ flex: 1, backgroundColor: "#000", alignItems: "center", justifyContent: "center" }}>
+      <Text style={{ color: "#fff" }}>No profile yet.</Text>
+      <Text style={{ color: "#9ca3af", marginTop: 6 }}>Tap “Edit” to create it.</Text>
+    </View>
+  );
+}
 
   // Map your current keys to what the UI expects
-  const mapped = {
-    initials: profile.name ? profile.name[0].toUpperCase() : "?",
-    name: profile.name || "",
-    subtitle: profile.goal || "",             // shown under name
-    looking: "",                              // not collected yet
-    fitnessLevel: "",                         // not collected yet
-    split: "",                                // not collected yet
-    gymName: profile.gym || "",
-    gymAddr: "",                              // not collected yet
-    availability: [],                         // not collected yet
-    about: "",                                // not collected yet
-  };
+ const DAYS_ORDER = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+
+const mapped = {
+  initials: profile.name ? profile.name[0].toUpperCase() : "?",
+  name: profile.name || "",
+  goal: profile.goal || "",
+  about: profile.about || "",
+  level: profile.fitnessLevel || "",
+  split: profile.split || "",
+  gymName: profile.gym?.name || profile.gym || "",
+  gymAddr: profile.gym?.address || "",
+  time: profile.time || "",
+  days: Array.isArray(profile.days) ? profile.days : [],
+  // If profile.availability exists use it; else build from days/time
+  availability: Array.isArray(profile.availability) && profile.availability.length > 0
+    ? profile.availability
+    : (Array.isArray(profile.days) ? [...profile.days]
+        .sort((a,b) => DAYS_ORDER.indexOf(a) - DAYS_ORDER.indexOf(b))
+        .map(d => ({
+          day: d,
+          time: profile.time || "Anytime",
+          tag: "preferred", // or profile.goal || "", your call
+        }))
+      : []),
+};
+
 
   return (
     <View style={styles.container}>
-      {/* Header row with avatar + name block */}
-      <View style={styles.headerRow}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>{mapped.initials}</Text>
-        </View>
-        <View style={{ flex: 1, marginLeft: 12 }}>
-          <Text style={styles.name}>{mapped.name || "—"}</Text>
-          <Text style={styles.subtitle}>{mapped.subtitle || " "}</Text>
-          {!!mapped.looking && <Text style={styles.looking}>{mapped.looking}</Text>}
-        </View>
+
+    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 60 }}>
+    {/* Header row with avatar + name block */}
+    <View style={styles.headerRow}>
+      <View style={styles.avatar}>
+        <Text style={styles.avatarText}>{mapped.initials}</Text>
       </View>
+      <View style={{ flex: 1, marginLeft: 12 }}>
+        <Text style={styles.name}>{mapped.name || "—"}</Text>
+        <Text style={styles.about}>{mapped.about || " "}</Text>
+        {!!mapped.looking && <Text style={styles.looking}>{mapped.looking}</Text>}
+      </View>
+    </View>
 
       {/* Stats Card */}
       <Card title="Stats">
-        <Row label="Fitness Level" value={mapped.fitnessLevel || "—"} />
+        <Row label="Goal" value={mapped.goal || "—"} />
+        <Row label="Fitness Level" value={mapped.level || "—"} />
         <Row label="Workout Split" value={mapped.split || "—"} />
+       
+
       </Card>
 
       {/* Home Gym Card */}
-      <Card title="Home Gym">
+      <Card title="Gym">
         <Text style={styles.cardTitleText}>{mapped.gymName || "—"}</Text>
         {!!mapped.gymAddr && <Text style={styles.cardSubText}>{mapped.gymAddr}</Text>}
       </Card>
@@ -89,8 +169,11 @@ export default function ProfileScreen() {
       <Card title="About Me">
         <Text style={styles.aboutText}>{mapped.about || "—"}</Text>
       </Card>
+       </ScrollView>
     </View>
+   
   );
+  
 }
 
 /* ---------- tiny building blocks ---------- */

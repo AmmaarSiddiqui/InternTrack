@@ -1,8 +1,11 @@
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp, getApps } from "firebase/app";
+import {
+  initializeAuth,
+  getReactNativePersistence,
+} from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { initializeFirestore, setLogLevel } from "firebase/firestore";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyArWbYT4-bXV3nKv8-WCn9ZRSNgK788DCs",
   authDomain: "partnerandpump.firebaseapp.com",
@@ -13,9 +16,20 @@ const firebaseConfig = {
   measurementId: "G-J87WQ6KB0G",
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Ensure we only initialize once
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 
-// Export Firebase services
-export const auth = getAuth(app);
-export const db = getFirestore(app);
+// ✅ Persistent Auth across restarts
+export const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(AsyncStorage),
+});
+
+// ✅ Firestore tuned for React Native (iOS safe)
+export const db = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true,  // lets it use WebSockets when possible
+  useFetchStreams: true,                    // streams when available
+  longPollingOptions: { timeoutSeconds: 5 } // faster retries if it *must* long-poll
+});
+
+// optional: silence verbose Firestore logs
+setLogLevel("error");
