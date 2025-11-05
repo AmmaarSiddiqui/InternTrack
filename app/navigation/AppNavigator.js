@@ -9,6 +9,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useAuth } from "../state/useAuthContext";
 import { Ionicons } from "@expo/vector-icons"; 
 import { useTheme } from "@react-navigation/native";
+import { View, Text, ActivityIndicator } from "react-native";
 
 import HomeScreen from "../screens/HomeScreen";
 import ProfileCreateScreen from "../screens/ProfileCreateScreen";
@@ -103,7 +104,13 @@ export default function AppNavigator() {
             component={AuthScreen}
             options={{ headerShown: false }}
           />
-        ) : !profile ? (
+        )  : profile === undefined ? ( 
+          <Stack.Screen
+            name="Boot"
+            component={BootScreen}
+            options={{ headerShown: false }}
+          />
+        ) : profile === null ? (      
           <Stack.Screen
             name="ProfileCreate"
             component={ProfileCreateScreen}
@@ -130,5 +137,13 @@ export default function AppNavigator() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+  );
+}
+function BootScreen() {
+  return (
+    <View style={{ flex:1, backgroundColor:"#121212", alignItems:"center", justifyContent:"center" }}>
+      <ActivityIndicator color="#fff" />
+      <Text style={{ color:"#9aa0a6", marginTop:8 }}>Loading your profile…</Text>
+    </View>
   );
 }
