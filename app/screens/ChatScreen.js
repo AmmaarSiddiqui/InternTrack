@@ -9,10 +9,10 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 
-// Mock messages for the chat
 const MOCK_MESSAGES = [
   { id: "1", text: "Hey! Ready to hit the gym?", sender: "them" },
   { id: "2", text: "You know it! What time?", sender: "me" },
@@ -23,10 +23,8 @@ const MOCK_MESSAGES = [
 
 export default function ChatScreen({ route, navigation }) {
   const { colors } = useTheme();
-  // Get the name passed from MessagesScreen
   const { recipientName } = route.params;
 
-  // Set the header title to the recipient's name
   useLayoutEffect(() => {
     navigation.setOptions({
       title: recipientName,
@@ -53,31 +51,35 @@ export default function ChatScreen({ route, navigation }) {
   );
 
   return (
-    <KeyboardAvoidingView
+    <SafeAreaView 
       style={{ flex: 1, backgroundColor: colors.background }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      keyboardVerticalOffset={90} // Adjust as needed
+      edges={['bottom']}
     >
-      <FlatList
-        style={styles.chatList}
-        data={MOCK_MESSAGES}
-        keyExtractor={(item) => item.id}
-        renderItem={renderMessage}
-        inverted // This makes the chat start from the bottom
-      />
-      
-      {/* Message Input Box */}
-      <View style={[styles.inputContainer, { backgroundColor: colors.card }]}>
-        <TextInput
-          style={[styles.input, { color: colors.text }]}
-          placeholder="Type a message..."
-          placeholderTextColor="gray"
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={90}
+      >
+        <FlatList
+          style={styles.chatList}
+          data={MOCK_MESSAGES}
+          keyExtractor={(item) => item.id}
+          renderItem={renderMessage}
+          inverted
         />
-        <TouchableOpacity style={[styles.sendButton, { backgroundColor: colors.primary }]}>
-          <Ionicons name="arrow-up-circle" size={32} color="white" />
-        </TouchableOpacity>
-      </View>
-    </KeyboardAvoidingView>
+        
+        <View style={[styles.inputContainer, { backgroundColor: colors.card }]}>
+          <TextInput
+            style={[styles.input, { color: colors.text }]}
+            placeholder="Type a message..."
+            placeholderTextColor="gray"
+          />
+          <TouchableOpacity style={[styles.sendButton, { backgroundColor: colors.primary }]}>
+            <Ionicons name="arrow-up-circle" size={32} color="white" />
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
