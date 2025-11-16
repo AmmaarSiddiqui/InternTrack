@@ -89,6 +89,8 @@ cd functions
 npm ci
 cd ..
 ```
+#### Environment Variables
+Make sure to email mas954@uw.edu for environment variables
 
 2) Build & run the mobile client (Expo)
 #### From repo root
