@@ -1,6 +1,15 @@
 # Partner & Pump: User Manual
 
 Welcome to Partner & Pump! 🏋️‍♂️ This manual will guide you through accessing, setting up, and using our app to find your next great workout partner.
+# Note
+A lot of these features are currently under development and will be updated/changed. 
+The current flow may not match the current implementation but will be updated soon! 
+Changes underdevelopment/currently different from manual: 
+- Profile setup screen
+- Pump now time window selection (currently under edit profile)
+- Matching screen / compatibility score
+- Discover feed (Currently unresponsive)
+- Messaging (Currently unresponsive)
 
 ## 1. What is Partner & Pump?
 
