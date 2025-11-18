@@ -96,11 +96,11 @@ Make sure to email mas954@uw.edu for environment variables (Currently should not
 #### From repo root
 #### Clear cache on first run while we’re evolving dependencies
 ```
-cd ~
+cd Partner-And-Pump
 npx expo start -c
 ```
 Download the Expo Go App. 
-Scan the QR with Expo Go (iOS/Android) to launch the app.
+Scan the QR code with Expo Go (iOS/Android) to open Partner And Pump on your device.
 
 Make sure your phone and computer are on the same network.
 
