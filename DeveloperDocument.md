@@ -18,7 +18,7 @@
 git clone https://github.com/AmmaarSiddiqui/Partner-And-Pump
 ```
   3. Navigate into the project directory
-      cd partner-and-pump
+      cd Partner-And-Pump
 
 # Directory Structure
  ```
