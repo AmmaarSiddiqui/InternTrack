@@ -90,7 +90,7 @@ npm ci
 cd ..
 ```
 #### Environment Variables
-Make sure to email mas954@uw.edu for environment variables
+Make sure to email mas954@uw.edu for environment variables (Currently should not be needed)
 
 2) Build & run the mobile client (Expo)
 #### From repo root
