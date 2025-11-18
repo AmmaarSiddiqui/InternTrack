@@ -26,7 +26,7 @@ Partner & Pump will be available for download on the app store soon. Users can g
 * An ios device (IOS 15+)
 * An internet connection.
 
-## 3. How to Run the Software
+## 3. How to Run the Software (Currently under development, not available on the app store for now)
 
 1.  Download the Partner & Pump app on an IOS 15+ device.
 2.  Navigate to the Partner & Pump App.
@@ -105,7 +105,19 @@ We are actively working on new features. The following functionality is planned 
 * **Workout Tracking & Sync:** The ability to log your workouts, track your consistency with partners, and sync data from fitness trackers and services.
 * **Shared Workout Scheduling:** A tool to create custom workout routines (exercises, sets, reps) and share them directly with your partners within the app.
 
-## 5. How to Report a Bug
+## 5. How to Run the Software as a tester/developer
+
+Install dependecies: 
+```
+npm i -g firebase-tools   # deploy/emulate backend
+git clone https://github.com/AmmaarSiddiqui/Partner-And-Pump.git
+cd Partner-And-Pump
+npm ci
+npx expo start -c
+```
+
+
+## 6. How to Report a Bug
 
 We rely on your feedback to improve Partner & Pump! If you find a bug, error, or other issue, please let us know.
 
